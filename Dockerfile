@@ -1,32 +1,28 @@
-# Stage 1: Build the app using Maven
-FROM openjdk:17-jdk-slim AS build
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:17-jdk-slim
 
-# Set the working directory inside the container
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy Maven files first (for better caching)
+# Copy the Maven wrapper and pom.xml
 COPY .mvn .mvn
 COPY mvnw .
 COPY pom.xml .
 
+# ✅ Add this line to fix the permission error
+RUN chmod +x mvnw
+
 # Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Copy the full source code
+# Copy the rest of the project files
 COPY . .
 
-# Build the Spring Boot application
+# Build the application
 RUN ./mvnw clean package -DskipTests
 
-# Stage 2: Runtime image
-FROM openjdk:17-jdk-slim
+# Expose the Spring Boot default port
+EXPOSE 8080
 
-WORKDIR /app
-
-# Copy the built JAR from the build stage
-COPY --from=build /app/target/*.jar app.jar
-
-# Copy the secret application.properties from Render's secrets directory at runtime
-# and run the app with the external config
-CMD cp /etc/secrets/application.properties ./application.properties && \
-    java -jar app.jar --spring.config.location=classpath:/,file:./application.properties
+# Replace with your actual JAR name if needed
+CMD ["java", "-jar", "target/hirevision-backend-0.0.1-SNAPSHOT.jar"]
