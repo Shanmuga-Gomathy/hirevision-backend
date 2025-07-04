@@ -1,31 +1,24 @@
-# Use official OpenJDK as base image
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:21-jdk
 
 # Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and config files first (to use cache for dependencies)
+# Copy project files
 COPY .mvn .mvn
 COPY mvnw .
 COPY pom.xml .
 
-# ✅ Make mvnw executable
-RUN chmod +x mvnw
+# Download dependencies
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
-# Download dependencies for layer caching
-RUN ./mvnw dependency:go-offline
-
-# Copy the full source code
+# Copy rest of the app
 COPY . .
 
-# ✅ Ensure mvnw remains executable after copy (some OSes reset permissions)
-RUN chmod +x mvnw
-
-# Build the application
+# Build the app
 RUN ./mvnw clean package -DskipTests
 
-# Expose default Spring Boot port
+# Expose port
 EXPOSE 8080
 
 # Run the app
-CMD ["java", "-jar", "target/hirevision-backend-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/JobReferralApp-0.0.1-SNAPSHOT.jar"]
