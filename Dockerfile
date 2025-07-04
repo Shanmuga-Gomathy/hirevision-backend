@@ -1,25 +1,32 @@
-# Use an official OpenJDK runtime as a parent image
-FROM openjdk:17-jdk-slim
+# Stage 1: Build the app using Maven
+FROM openjdk:17-jdk-slim AS build
 
-# Set the working directory in the container
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Maven wrapper and the pom.xml
+# Copy Maven files first (for better caching)
 COPY .mvn .mvn
 COPY mvnw .
 COPY pom.xml .
 
-# Download dependencies (layer caching)
+# Download dependencies
 RUN ./mvnw dependency:go-offline
 
-# Copy the rest of the project files
+# Copy the full source code
 COPY . .
 
-# Build the application
+# Build the Spring Boot application
 RUN ./mvnw clean package -DskipTests
 
-# Expose the default Spring Boot port
-EXPOSE 8080
+# Stage 2: Runtime image
+FROM openjdk:17-jdk-slim
 
-# Run the application
-CMD ["java", "-jar", "target/*.jar"]
+WORKDIR /app
+
+# Copy the built JAR from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Copy the secret application.properties from Render's secrets directory at runtime
+# and run the app with the external config
+CMD cp /etc/secrets/application.properties ./application.properties && \
+    java -jar app.jar --spring.config.location=classpath:/,file:./application.properties
