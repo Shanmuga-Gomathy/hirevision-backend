@@ -1,24 +1,28 @@
+# Use Java 21 LTS base image
 FROM eclipse-temurin:21-jdk
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy project files
+# Copy Maven wrapper files first (to cache dependencies if code changes later)
 COPY .mvn .mvn
 COPY mvnw .
 COPY pom.xml .
 
-# Download dependencies
-RUN chmod +x mvnw && ./mvnw dependency:go-offline
+# ✅ Fix: Add execute permission inside Docker image
+RUN chmod +x mvnw
 
-# Copy rest of the app
+# Download dependencies
+RUN ./mvnw dependency:go-offline
+
+# Copy the rest of the source code
 COPY . .
 
-# Build the app
+# Build the application (skip tests for faster build)
 RUN ./mvnw clean package -DskipTests
 
-# Expose port
+# Expose port used by Spring Boot
 EXPOSE 8080
 
-# Run the app
+# Run the application
 CMD ["java", "-jar", "target/JobReferralApp-0.0.1-SNAPSHOT.jar"]
