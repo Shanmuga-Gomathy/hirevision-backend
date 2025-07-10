@@ -1,0 +1,62 @@
+# === Spring Boot App Configuration ===
+spring.application.name=JobReferralApp
+server.port=8080
+
+# === PostgreSQL DB Configuration (Render hosted) ===
+spring.datasource.url=jdbc:postgresql://dpg-d1jss2h5pdvs73fcn6v0-a/hirevision_db_0kbf
+spring.datasource.username=root
+spring.datasource.password=Tjqzthmx0vT2UypO6JATXUv2hplQmZJN
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+# === JPA Configuration ===
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.properties.hibernate.format_sql=true
+
+# === Email Configuration (Gmail SMTP) ===
+spring.mail.host=smtp.gmail.com
+spring.mail.port=465
+spring.mail.username=gomathy220604@gmail.com
+spring.mail.password=qywp ntiu hkxv ymoa
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.socketFactory.port=465
+spring.mail.properties.mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory
+spring.mail.properties.mail.smtp.socketFactory.fallback=false
+spring.mail.properties.mail.smtp.ssl.enable=true
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
+spring.mail.properties.mail.smtp.timeout=10000
+spring.mail.properties.mail.smtp.connectiontimeout=10000
+
+# === Logging Configuration ===
+logging.level.com.referralapp=DEBUG
+logging.level.org.springframework.security=DEBUG
+
+# === JWT Settings ===
+jwt.secret=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+jwt.expiration=86400000
+jwt.refresh-token.expiration=604800000
+
+# === App URLs (if used in your code with @Value or System.getenv) ===
+APP_NAME=HireVision AI
+APP_URL=https://hirevision-frontend-git-main-shanmuga-gomathys-projects.vercel.app
+APP_BACKEND_URL=https://hirevision-backend.onrender.com
+
+# === Admin Details (if used in your code) ===
+ADMIN_EMAIL=shanmugagomathy920@gmail.com
+ADMIN_NAME=HireVision Admin
+
+# === Token Expiry Config (if used in your code) ===
+TOKEN_EXPIRY_MINUTES=15
+TOKEN_EXPIRY_ADMIN_APPROVAL_HOURS=48
+
+# === Email Subject Config (if used in your code) ===
+EMAIL_SUBJECT_JOB_SEEKER_CONFIRMATION=Confirm Your HireVision AI Account
+EMAIL_SUBJECT_RECRUITER_PENDING=Your HireVision AI Account is Pending Approval
+EMAIL_SUBJECT_ADMIN_NOTIFICATION=New Recruiter Registration - Action Required
+EMAIL_SUBJECT_RECRUITER_APPROVED=Your HireVision AI Account Has Been Approved
+EMAIL_SUBJECT_RECRUITER_REJECTED=Your HireVision AI Account Application
+
+# === Registration Settings (if used in your code) ===
+REGISTRATION_MAX_ATTEMPTS=3
+REGISTRATION_BLOCK_DURATION_MINUTES=30
