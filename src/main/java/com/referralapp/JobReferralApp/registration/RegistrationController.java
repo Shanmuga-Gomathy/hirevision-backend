@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin(origins = "https://hirevision-frontend-git-main-shanmuga-gomathys-projects.vercel.app")
 @RestController
 @RequestMapping(path="api/v1/registration")
 @AllArgsConstructor

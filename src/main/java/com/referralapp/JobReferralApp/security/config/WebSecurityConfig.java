@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -36,24 +37,20 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Allow authentication endpoints
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        // Allow all registration endpoints (GET, POST, etc.)
-                        .requestMatchers("/api/v*/registration/**").permitAll()
-                        // Allow health check endpoint
-                        .requestMatchers("/actuator/health").permitAll()
-                        // Allow static resources
-                        .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/api/jobs/all").permitAll()
-                        .requestMatchers("/api/jobs/create", "/api/jobs/my", "/api/jobs/{id}", "/api/jobs/{id}/**").permitAll()
-                        .requestMatchers("/api/recruiter/analytics").permitAll()
-                        .requestMatchers("/api/recruiter/analytics/**").permitAll()
-                        .requestMatchers("/api/applications/**").permitAll()
-                        .requestMatchers("/api/resume/**").permitAll()
-                        .requestMatchers("/api/recommendations").permitAll()
-                        .requestMatchers("/api/recommendations/**").permitAll()
-                        .requestMatchers("/api/jobs/applications/**").permitAll()
-                        // Require authentication for everything else
+                        .requestMatchers(
+                                "/api/v1/auth/**",
+                                "/api/v*/registration/**",
+                                "/actuator/health",
+                                "/static/**", "/css/**", "/js/**", "/images/**",
+                                "/api/jobs/all",
+                                "/api/jobs/create", "/api/jobs/my",
+                                "/api/jobs/**",
+                                "/api/recruiter/analytics/**",
+                                "/api/applications/**",
+                                "/api/resume/**",
+                                "/api/recommendations/**",
+                                "/api/jobs/applications/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -67,11 +64,12 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of("https://hirevision-frontend-git-main-shanmuga-gomathys-projects.vercel.app"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
-        
+        configuration.setMaxAge(3600L); // optional
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

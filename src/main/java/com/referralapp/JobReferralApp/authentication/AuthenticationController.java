@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://hirevision-frontend-git-main-shanmuga-gomathys-projects.vercel.app")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
